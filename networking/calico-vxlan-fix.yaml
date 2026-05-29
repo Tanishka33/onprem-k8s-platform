@@ -1,0 +1,22 @@
+# Apply once if cross-node pod traffic fails on AWS (pod IP routing blocked by source/dest check).
+# Forces VXLAN for all node-to-node pod traffic (outer packets use node IPs).
+#
+# kubectl apply -f networking/calico-vxlan-fix.yaml
+#
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  calicoNetwork:
+    ipPools:
+      - allowedUses:
+          - Workload
+          - Tunnel
+        blockSize: 26
+        cidr: 192.168.0.0/16
+        disableBGPExport: false
+        encapsulation: VXLAN
+        name: default-ipv4-ippool
+        natOutgoing: Enabled
+        nodeSelector: all()

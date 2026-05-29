@@ -1,0 +1,45 @@
+# Frontend ingress 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: feedback-frontend-ingress
+  namespace: shared-apps
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: feedback-tls
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 8080
+
+---
+# API ingress 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: feedback-api-ingress
+  namespace: shared-apps
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  tls:
+    - secretName: feedback-tls
+  rules:
+    - http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend-service
+                port:
+                  number: 80

@@ -1,0 +1,5 @@
+tls.key
+tls.crt
+*.pem
+.env
+kubeconfig

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shared-apps
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: critical-apps
