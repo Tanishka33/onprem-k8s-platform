@@ -29,24 +29,37 @@ pipeline {
                 '''
             }
         }
-
-        stage('Docker Debug') {
-            steps {
-                sh '''
-                whoami
-                id
-                groups
-                ls -l /var/run/docker.sock
-                '''
-            }
-        }
-
+        
         stage('Build Backend Image') {
             steps {
                 sh '''
                 docker build \
                 -t tanishkaborade/feedback-backend:${BUILD_NUMBER} \
                 backend
+                '''
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
+                }
+            }
+        }
+        
+        stage('Push Backend Image') {
+            steps {
+                sh '''
+                docker push tanishkaborade/feedback-backend:${BUILD_NUMBER}
                 '''
             }
         }
