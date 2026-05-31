@@ -4,7 +4,6 @@ pipeline {
     }
 
     stages {
-
         stage('Repository Verification') {
             steps {
                 sh 'pwd'
@@ -64,10 +63,28 @@ pipeline {
             }
         }
 
-        stage('Verify Image') {
+        stage('Build Frontend Image') {
             steps {
                 sh '''
-                docker images | grep feedback-backend
+                docker build \
+                -t tanishkaborade/feedback-frontend:${BUILD_NUMBER} \
+                frontend
+                '''
+            }
+        }
+
+        stage('Push Frontend Image') {
+            steps {
+                sh '''
+                docker push tanishkaborade/feedback-frontend:${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage('Verify Images') {
+            steps {
+                sh '''
+                docker images | grep feedback
                 '''
             }
         }
@@ -79,7 +96,7 @@ pipeline {
         }
 
         success {
-            echo 'Backend Docker Image Built Successfully'
+            echo 'Backend and Frontend Docker Images Built and Pushed Successfully'
         }
 
         failure {
