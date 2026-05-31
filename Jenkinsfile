@@ -96,11 +96,15 @@ pipeline {
                 '''
             }
         }
-        stage('Deploy Namespaces') {
+        stage('Deploy Backend') {
             steps {
                 sh '''
-                kubectl apply -f namespaces/namespaces.yaml
-                kubectl get ns
+                kubectl set image deployment/backend \
+                backend=tanishkaborade/feedback-backend:${BUILD_NUMBER} \
+                -n shared-apps
+        
+                kubectl rollout status deployment/backend \
+                -n shared-apps
                 '''
             }
         }
