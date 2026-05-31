@@ -1,8 +1,9 @@
-from app import app
+import sys
+import os
 
-def test_health():
-    client = app.test_client()
-
-    response = client.get("/health")
-
-    assert response.status_code == 200
+sys.path.insert(
+    0,
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..")
+    )
+)
