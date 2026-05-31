@@ -16,7 +16,6 @@ pipeline {
             steps {
                 sh '''
                 cd backend
-
                 python3 -m pip install --break-system-packages -r requirements.txt
                 '''
             }
@@ -26,8 +25,25 @@ pipeline {
             steps {
                 sh '''
                 cd backend
-
                 pytest tests -v
+                '''
+            }
+        }
+
+        stage('Build Backend Image') {
+            steps {
+                sh '''
+                docker build \
+                -t tanishkaborade/feedback-backend:${BUILD_NUMBER} \
+                backend
+                '''
+            }
+        }
+
+        stage('Verify Image') {
+            steps {
+                sh '''
+                docker images | grep feedback-backend
                 '''
             }
         }
@@ -36,6 +52,14 @@ pipeline {
     post {
         always {
             echo 'Pipeline Finished'
+        }
+
+        success {
+            echo 'Backend Docker Image Built Successfully'
+        }
+
+        failure {
+            echo 'Pipeline Failed'
         }
     }
 }
