@@ -30,6 +30,17 @@ pipeline {
             }
         }
 
+        stage('Docker Debug') {
+            steps {
+                sh '''
+                whoami
+                id
+                groups
+                ls -l /var/run/docker.sock
+                '''
+            }
+        }
+
         stage('Build Backend Image') {
             steps {
                 sh '''
