@@ -88,6 +88,14 @@ pipeline {
                 '''
             }
         }
+        stage('Verify Kubernetes Cluster') {
+            steps {
+                sh '''
+                kubectl get nodes
+                kubectl get ns
+                '''
+            }
+        }
     }
 
     post {
