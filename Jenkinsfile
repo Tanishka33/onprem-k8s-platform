@@ -96,6 +96,14 @@ pipeline {
                 '''
             }
         }
+        stage('Deploy Namespaces') {
+            steps {
+                sh '''
+                kubectl apply -f namespaces/namespaces.yaml
+                kubectl get ns
+                '''
+            }
+        }
     }
 
     post {
