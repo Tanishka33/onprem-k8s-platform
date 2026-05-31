@@ -7,19 +7,27 @@ pipeline {
 
         stage('Repository Verification') {
             steps {
-                echo 'Repository Cloned Successfully'
-
                 sh 'pwd'
                 sh 'ls -la'
             }
         }
 
-        stage('Backend Verification') {
+        stage('Install Dependencies') {
             steps {
                 sh '''
                 cd backend
-                python3 --version
-                ls -la
+
+                python3 -m pip install --break-system-packages -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                cd backend
+
+                pytest tests -v
                 '''
             }
         }
