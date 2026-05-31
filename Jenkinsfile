@@ -108,6 +108,18 @@ pipeline {
                 '''
             }
         }
+        stage('Deploy Frontend') {
+            steps {
+                sh '''
+                kubectl set image deployment/frontend \
+                frontend=tanishkaborade/feedback-frontend:${BUILD_NUMBER} \
+                -n shared-apps
+        
+                kubectl rollout status deployment/frontend \
+                -n shared-apps
+                '''
+            }
+        }
     }
 
     post {
