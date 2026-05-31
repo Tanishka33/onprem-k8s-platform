@@ -120,6 +120,20 @@ pipeline {
                 '''
             }
         }
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                echo " Pods "
+                kubectl get pods -n shared-apps
+        
+                echo " Services "
+                kubectl get svc -n shared-apps
+        
+                echo " Ingress "
+                kubectl get ingress -n shared-apps
+                '''
+            }
+        }
     }
 
     post {
